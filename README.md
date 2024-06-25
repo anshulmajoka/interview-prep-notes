@@ -5,13 +5,47 @@
 ![alt text](https://raw.githubusercontent.com/anshulmajoka/interview-prep-notes/main/images/java8.jpg)
 
 ``` java
+IntStream.concat(Arrays.stream(a), Arrays.stream(b)).sorted().toArray();
+**three maximum numbers and three minimum numbers**
+listOfIntegers.stream().sorted().limit(3).forEach(System.out::println);
+listOfIntegers.stream().sorted(Comparator.reverseOrder()).limit(3).forEach(System.out::println);
 
+**anagrams**
+String s1 = "RaceCar";
+String s2 = "CarRace";
+s1 = Stream.of(s1.split(``""``)).map(String::toUpperCase).sorted().collect(Collectors.joining());
+s2 = Stream.of(s2.split(``""``)).map(String::toUpperCase).sorted().collect(Collectors.joining());
+```
+
+```java
+int i = 15623;
+Integer sumOfDigits = Stream.of(String.valueOf(i).split("")).collect(Collectors.summingInt(Integer::parseInt));
+  
+List<String> listOfStrings = Arrays.asList("Java","Python","C#","HTML","Kotlin","C++","COBOL","C");
+listOfStrings.stream().sorted(Comparator.comparing(String::length)).forEach(System.out::println);
+
+int sum = Arrays.stream(a).sum();
+double average = Arrays.stream(a).average().getAsDouble();        
 ```
 
 ``` java
 .collect(Collectors.partitioningBy(i -> i % 2 == 0));
 .stream().distinct().collect(Collectors.toList());
 .mapToObj(c -> (char) c).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+**common elements between two arrays?**
+`List<Integer> list1 = Arrays.asList(``71``,` `21``,` `34``,` `89``,` `56``,` `28``);`
+`List<Integer> list2 = Arrays.asList(``12``,` `56``,` `17``,` `21``,` `94``,` `34``);`
+`list1.stream().filter(list2::contains).forEach(System.out::println);`
+
+**Reverse each word of a string using Java 8 streams?**
+`String reversedStr = Arrays.stream(str.split(``" "``))`
+`.map(word ->` `new` `StringBuffer(word).reverse())`
+`.collect(Collectors.joining(``" "``));`
+
+**Reverse an integer array**
+`int``[] array =` `new` `int``[] {5,1,7,3,9,6};
+`int``[] reversedArray = IntStream.rangeClosed(``1``, array.length).map(i -> array[array.length - i]).toArray();`
 
 ```
 
@@ -60,8 +94,44 @@ System.out.println("Student count in each department : "+countStudentInEachdept)
 Map<String, Double> mapAvgAge = list.stream()  
 .collect(Collectors.groupingBy(Student::getGender, Collectors.averagingInt(Student::getAge)));  
 System.out.println("Average age of male and female students : "+mapAvgAge);
+
+**most repeated element in an array?**
+
+`List<String> listOfStrings = Arrays.asList(``"Pen"``,` `"Eraser"``,` `"Note Book"``,` `"Pen"``,` `"Pencil"``,` `"Pen"``,` `"Note Book"``,` `"Pencil"``);`
+`Map<String, Long> elementCountMap = listOfStrings.stream()`
+`.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));`
+
+`Entry<String, Long> mostFrequentElement = elementCountMap.entrySet().stream().max(Map.Entry.comparingByValue()).get();`
 ```
 
+``` java
+**extract duplicate elements from an array?**
+`List<Integer> listOfIntegers = Arrays.asList(``111``,` `222``,` `333``,` `111``,` `555``,` `333``,` `777``,` `222``);`
+
+`Set<Integer> uniqueElements =` `new` `HashSet<>();`
+`Set<Integer> duplicateElements = listOfIntegers.stream().filter(i -> ! uniqueElements.add(i)).collect(Collectors.toSet());` 
+//[333, 222, 111]
+
+**first repeated character in a string?**
+
+Map<String, Long> charCountMap = Arrays.stream(inputString.split(""))
+.collect(Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.counting()));`
+
+String firstRepeatedChar = charCountMap.entrySet()
+.stream()
+.filter(entry -> entry.getValue() >1)
+.map(entry -> entry.getKey())
+.findFirst()
+.get();
+
+```
+```java
+**Fibonacci series**
+Stream.iterate(new int[] {0,1}, f -> new int[] {f[1], f[0]+f[1]})`
+.limit(10)
+.map(f -> f[0])
+.forEach(i -> System.out.print(i+ " "));
+```
 ``` java
 ## Find the department who is having maximum number of students**
 Entry<String, Long> entry = list.stream()  
