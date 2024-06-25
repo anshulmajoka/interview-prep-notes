@@ -1,3 +1,54 @@
+# Java 8
+
+### Summary
+
+![alt text](https://raw.githubusercontent.com/anshulmajoka/interview-prep-notes/main/images/java8.jpg)
+
+``` java
+## Find the count of student in each department
+
+Map<String, Long> countStudentInEachdept = list.stream()  
+.collect(Collectors.groupingBy(Student::getDepartmantName, Collectors.counting()));  
+System.out.println("Student count in each department : "+countStudentInEachdept);
+
+## Find the average age of male and female students
+
+Map<String, Double> mapAvgAge = list.stream()  
+.collect(Collectors.groupingBy(Student::getGender, Collectors.averagingInt(Student::getAge)));  
+System.out.println("Average age of male and female students : "+mapAvgAge);
+
+## Find the department who is having maximum number of students**
+Entry<String, Long> entry = list.stream()  
+.collect(Collectors.groupingBy(Student::getDepartmantName, Collectors.counting()))
+.entrySet().stream()  
+.max(Map.Entry.comparingByValue()).get();  
+System.out.println("Department having maximum number of students : "+entry);
+
+## - Find the Students who stays in Delhi and sort them by their names**
+List<Student> lstDelhistudent = list.stream()
+.filter(dt -> dt.getCity().equals("Delhi"))
+.sorted(Comparator.comparing(Student::getFirstName))
+.collect(Collectors.toList());  
+System.out.println("List of students who stays in Delhi and sort them by their names : "+lstDelhistudent);
+
+## - Find the average rank in all departments**
+Map<String, Double> collect = list.stream()  
+.collect(Collectors.groupingBy(Student::getDepartmantName, Collectors.averagingInt(Student::getRank)));  
+System.out.println("Average rank in all departments : "+collect);
+
+## - Find the highest rank in each department**
+Map<String, Optional<Student>> studentData = list.stream().collect(Collectors.groupingBy(Student::getDepartmantName,  
+Collectors.minBy(Comparator.comparing(Student::getRank))));  
+System.out.println("Highest rank in each department : "+studentData);
+
+## - Find the student who has second rank**
+Student  student  = list.stream().sorted(Comparator.comparing(Student::getRank)).skip(1).findFirst().get();  
+System.out.println("Second highest rank student : "+student);
+
+
+
+
+```
 # MultiThreading
 
 ## Key Concepts
