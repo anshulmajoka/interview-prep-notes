@@ -5,18 +5,64 @@
 ![alt text](https://raw.githubusercontent.com/anshulmajoka/interview-prep-notes/main/images/java8.jpg)
 
 ``` java
+
+```
+
+``` java
+.collect(Collectors.partitioningBy(i -> i % 2 == 0));
+.stream().distinct().collect(Collectors.toList());
+.mapToObj(c -> (char) c).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+```
+
+``` java
+
+//frequency of each element in an array or a list
+List<String> stationeryList = Arrays.asList("Pen", "Eraser", "Note Book", "Pen", "Pencil", "Stapler", "Note Book", "Pencil");        
+Map<String, Long> stationeryCountMap = 
+                stationeryList.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+```
+
+``` java
+decimalList.stream().sorted(Comparator.reverseOrder()).forEach(System.out::println);
+
+//6) Given a list of strings, join the strings with ‘[‘ as prefix, ‘]’ as suffix and ‘,’ as delimiter?
+String joinedString = listOfStrings.stream().collect(Collectors.joining(", ", "[", "]"));
+
+int max = listOfIntegers.stream().max(Comparator.naturalOrder()).get();
+int min = listOfIntegers.stream().min(Comparator.naturalOrder()).get();
+
+```
+
+``` java
+//Merging Two Streams
+Stream<Integer> resultingStream = Stream.concat(stream1, stream2);
+Stream<Integer> resultingStream = Stream.of(
+      stream1, stream2, stream3, stream4)
+      .flatMap(i -> i);
+-   We first create a new  _Stream_  containing the 4  _Streams,_  which results in a  _Stream<Stream<Integer>>_
+-   Then we  _flatMap()_  this into a  _Stream<Integer>_  using the identity function
+
+```
+
+``` java
 ## Find the count of student in each department
 
 Map<String, Long> countStudentInEachdept = list.stream()  
 .collect(Collectors.groupingBy(Student::getDepartmantName, Collectors.counting()));  
 System.out.println("Student count in each department : "+countStudentInEachdept);
 
+```
+
+``` java
 ## Find the average age of male and female students
 
 Map<String, Double> mapAvgAge = list.stream()  
 .collect(Collectors.groupingBy(Student::getGender, Collectors.averagingInt(Student::getAge)));  
 System.out.println("Average age of male and female students : "+mapAvgAge);
+```
 
+``` java
 ## Find the department who is having maximum number of students**
 Entry<String, Long> entry = list.stream()  
 .collect(Collectors.groupingBy(Student::getDepartmantName, Collectors.counting()))
