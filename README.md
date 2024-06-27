@@ -104,7 +104,8 @@ removeFirstOccurrence(Object), removeLastOccurrence(Object), descendingIterator(
             }
           """;
     System.out.println(text);
-} 
+}
+
 ``` 
 
 - **Improved Switch Statements**
@@ -121,7 +122,8 @@ private static void improvedSwitch(Fruit fruit) {
         default -> "Undefined fruit";
     };
     System.out.println(sql);
-}```
+}
+```
 
 ### Summary
 
