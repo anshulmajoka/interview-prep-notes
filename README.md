@@ -1,5 +1,128 @@
 # Java 8
 
+# Collections
+### Thread-Safe Data Structures:
+
+1.  **Synchronized Collections (Legacy)**:
+    
+    -   `Vector`
+    -   `Stack`
+    -   `Hashtable`
+2.  **Collections from `java.util.concurrent` package**:
+    -   `ConcurrentHashMap`
+    -   `CopyOnWriteArrayList`
+    -   `CopyOnWriteArraySet`
+    -   `ConcurrentLinkedQueue`
+    -   `ConcurrentLinkedDeque`
+    -   `LinkedBlockingQueue`
+    -   `ArrayBlockingQueue`
+    -   `PriorityBlockingQueue`
+    -   `DelayQueue`
+    -   `SynchronousQueue`
+    -   `LinkedTransferQueue`
+    -   `ConcurrentSkipListMap`
+    -   `ConcurrentSkipListSet`
+3.  **Synchronized Wrappers**: The `Collections` utility class provides methods to create synchronized versions of non-thread-safe collections.
+    
+    -   `Collections.synchronizedList(new ArrayList<>())`
+    -   `Collections.synchronizedSet(new HashSet<>())`
+    -   `Collections.synchronizedMap(new HashMap<>())`
+
+### Not Thread-Safe Data Structures:
+
+1.  **Standard Collections from `java.util` package**:
+    -   `ArrayList`
+    -   `LinkedList`
+    -   `HashSet`
+    -   `TreeSet`
+    -   `HashMap`
+    -   `TreeMap`
+    -   `LinkedHashMap`
+    -   `LinkedHashSet`
+
+**Synchronized data structures**, like `Vector` and `Hashtable`, use coarse-grained locking to ensure thread safety by locking the entire structure for each operation. 
+This approach can lead to significant performance overhead under high contention, as it prevents multiple threads from accessing the structure concurrently. 
+
+**Concurrent data structures**, such as `ConcurrentHashMap` and `CopyOnWriteArrayList`, employ fine-grained locking or lock-free algorithms, allowing multiple threads to operate on the data structure simultaneously with minimal performance degradation. 
+These concurrent collections are optimized for high-concurrency scenarios, providing better performance and scalability compared to their synchronized counterparts.
+
+
+## Data Structures
+ - Stack
+1.  **Push**: Add an element to the top of the stack.
+2.  **Pop**: Remove and return the element from the top of the stack.
+3.  **Peek**: Return the element at the top of the stack without removing it.
+4.  **isEmpty**: Check if the stack is empty.
+5.  **Search**: Return the 1-based position of an element in the stack.
+
+- Queue
+ 1. **addFirst**: The `addFirst(E e)` method inserts the specified element at the front of the deque. If the deque is full and cannot accommodate the additional element due to capacity restrictions (for example, in a bounded `Deque` implementation), `addFirst` will throw an `IllegalStateException`.
+ 2. **offerFirst**: The `offerFirst(E e)` method inserts the specified element at the front of the deque if it is possible to do so immediately without violating capacity restrictions. Else It'll return false;
+
+> This class is likely to be faster than Stack when used as a stack, and
+> faster than LinkedList when used as a queue. 
+
+-   `ArrayList`  is resized to a new size of  `oldCapacity + (oldCapacity >> 1)`, resulting in an increse of ~50%. The default capacity is 10, resulting in a capacities after resize of 15, 22, 33, 49, 73, 109, 163, 244, 366...
+    
+-   `ArrayDeque`  is always resized to a power of 2. On resize, the capacity is doubled. Starting with the default of 16, the resuling capacities after resize are 32, 64, 128, 256,...
+
+
+```java
+Stack<Integer>  stack  =  new  Stack<>();
+push(), pop(), peek()
+
+Deque<Integer> deque = new ArrayDeque<>();
+addFirst(E), addLast(E), 
+offerFirst(E), offerLast(E), 
+
+removeFirst(), removeLast(), 
+pollFirst(), pollLast(), 
+
+getFirst(), getLast(), 
+peekFirst(), peekLast(), 
+
+push(E), pop(),  // At First Location
+offer(E), // Insert at First Location
+poll(), // Remove at First Location
+peek(), // Look at first but not remove
+removeFirstOccurrence(Object), removeLastOccurrence(Object), descendingIterator()
+```
+
+
+
+# Java 17
+**Java SE 8, 11, 17 and 21** are LTS releases
+
+ - **Text Blocks**
+ ```java
+ private static void jsonBlock() {
+    String text = """
+            {
+              "name": "John Doe",
+              "age": 45,
+              "address": "Doe Street, 23, Java Town"
+            }
+          """;
+    System.out.println(text);
+} 
+``` 
+
+- **Improved Switch Statements**
+Java allows use of operator **_->(arrow)_** instead of **_: (colon)_** to denote the return expression. **_break_** keyword will not be needed when returning using switch in this expression, but **_default_** case is required.
+
+```java
+private static void improvedSwitch(Fruit fruit) {
+    String text = switch (fruit) {
+        case APPLE, PEAR -> {
+            System.out.println("the given fruit was: " + fruit);
+            yield "Common fruit";
+        }
+        case ORANGE, AVOCADO -> "Exotic fruit";
+        default -> "Undefined fruit";
+    };
+    System.out.println(sql);
+}```
+
 ### Summary
 
 ![alt text](https://raw.githubusercontent.com/anshulmajoka/interview-prep-notes/main/images/java8.jpg)
