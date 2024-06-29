@@ -89,6 +89,90 @@ removeFirstOccurrence(Object), removeLastOccurrence(Object), descendingIterator(
 ```
 
 
+## Memory
+###  Memory Areas in the JVM
+
+1.  **Heap Memory**: Used for dynamic memory allocation for Java objects and JRE classes. The heap is divided into:
+    
+    -   **Young Generation**: Consists of Eden Space and two Survivor Spaces (S0, S1).
+    -   **Old Generation**: Stores long-lived objects.
+    -   **Metaspace**: Stores metadata about classes.
+2.  **Stack Memory**: Each thread has its own stack, used for method execution and storing local variables, method parameters, and partial results. It also handles method invocations and returns.
+    
+3.  **Native Method Stack**: Used for native method calls (methods written in languages other than Java).
+    
+4.  **Program Counter (PC) Register**: Each thread has its own PC register, which contains the address of the current instruction being executed.
+    
+5.  **Method Area**: Part of the heap that stores class structures, including metadata, constants, static fields, and method bytecode.
+
+### **Memory leak**
+A memory leak is a situation where allocated memory is no longer needed but is not properly released or deallocated, leading to a gradual accumulation of memory usage over time. In other words, memory that is no longer being used remains allocated, occupying system resources unnecessarily.
+
+**Common causes**
+-   **Improper use of object references:** Objects that are created dynamically during runtime may not have their references properly released when they are no longer needed. This can happen if *developers forget to nullify object references or if objects are stored in data structures or collections that are not cleared appropriately.*
+    
+-   **Circular references:** When objects reference each other in a circular manner, without any external references that can break the loop, the garbage collector may not be able to identify and collect these objects. This can result in a memory leak, as the objects remain in memory even if they are no longer accessible or needed.
+    
+-   **Static references:** *Objects with static references can remain in memory for the entire duration of the application, even if they are no longer required.* If static references are not released properly, they can cause memory leaks by preventing the garbage collector from reclaiming memory associated with these objects.
+    
+-   **Unclosed resources:** Failing to properly close or release resources such as file handles, database connections, network sockets, or streams can lead to memory leaks. These resources may still hold references to allocated memory, preventing the garbage collector from reclaiming it.
+    
+-   **Cache-related issues:** Caching data or objects can be beneficial for performance, but if the cache is not properly managed, it can lead to memory leaks. Storing objects indefinitely in a cache without a proper expiration mechanism or without clearing outdated entries can cause memory consumption to grow continuously.
+    
+-   **Poorly implemented data structures:** In some cases, inefficient or poorly implemented data structures can lead to memory leaks. For example, a memory leak can occur if a data structure is not resized appropriately and retains unnecessary memory even after elements are removed.
+
+**How to find memory leak in java application ?**
+
+ - **Monitor memory usage**: Use tools like Java VisualVM, Java Mission Control. Look for abnormal or continuously increasing memory consumption over time, which could indicate a memory leak. [ jmx port when starting jvm can monitor the remote application ]
+ - **Heap dump analysis**: Can help you identify objects that are retaining excessive memory or instances that should have been garbage collected but are still present in memory.
+ - **Profiling tools:** Utilize profiling tools like YourKit, JProfiler, or VisualVM to analyze memory allocations, object references, and potential memory leaks. These tools can provide insights into object lifecycles, memory consumption patterns, and identify potential memory leaks in your code.
+ - **Analyze garbage collection logs:** Enable garbage collection (GC) logging for your application using JVM flags like `-Xloggc:<file>` and `-XX:+PrintGCDetails`. Understand the memory allocation and collection behavior of your application. Look for signs of excessive garbage collection activity or long pauses, which can indicate a memory leak.
+ - **Code review and analysis:**
+ - **Stress testing and profiling:**
+ - **Automated testing:** Implement automated test suites that exercise different parts of your application, including **memory-intensive operations or long-running processes**. Monitor memory usage during these tests and check for any unexpected memory growth or leaks.
+
+###  Garbage collection
+In the context of Java's garbage collection, the heap memory is divided into different regions to optimize memory management and garbage collection processes. The most commonly discussed regions are the Young Generation and the Old Generation.
+**System.gc()** and **Runtime.gc()** are the methods which requests for Garbage collection to JVM explicitly but it doesn’t ensures garbage collection as the final decision of garbage collection is of JVM only.
+**Garbage Collection Process**
+
+Heap Memory
+<pre>
+┌──────────────────────────────────────────────────────────────────┐
+│                                Heap Memory                       │
+│ ┌─────────────────────────────┬──┬─────────────────────────────┐ │
+│ │ Eden │   S0 (Survivor)  	│       S1 (Survivor)            │ │
+│ └─────────────────────────────┴───┴────────────────────────────┘ │
+│                            Young Generation                      │
+│                                                                  │
+│ ┌──────────────────────────────────────────────────────────────┐ │
+│ │   Old Generation    										 │ │
+│ └──────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────┘
+
+</pre>
+-   **Young Generation**: The region where new objects are allocated. It includes the Eden space and two survivor spaces. Minor garbage collections occur here, which are typically fast and frequent.
+	 -   **Eden Space**: Where new objects are allocated.
+	-   **Survivor Spaces (S0, S1)**: Objects that survive minor GCs in Eden are moved here.
+-   **Old Generation**: The region Stores long-lived objects that have survived multiple minor GCs. Major garbage collections occur here, which are less frequent but more time-consuming.
+- #### Garbage Collection Types
+
+	-   **Minor GC**:
+    
+	    -   Targets the Young Generation.
+	    -   Moves surviving objects from Eden to Survivor spaces or promotes them to the Old Generation.
+	    -   Fast and frequent.
+	-   **Major GC**:
+    
+	    -   Targets the Old Generation.
+	    -   More comprehensive and time-consuming.
+	    -   Involves longer pause times.
+
+- #### Interaction Between Generations
+	-   **Allocation**: New objects are allocated in Eden.
+	-   **Promotion**: Objects surviving multiple minor GCs are moved from the Young to the Old Generation.
+	-   **Tenuring Threshold**: Determines how many times an object can survive in the Survivor spaces before being promoted.
+
 
 # Java 17
 **Java SE 8, 11, 17 and 21** are LTS releases
@@ -104,8 +188,7 @@ removeFirstOccurrence(Object), removeLastOccurrence(Object), descendingIterator(
             }
           """;
     System.out.println(text);
-}
-
+} 
 ``` 
 
 - **Improved Switch Statements**
@@ -123,6 +206,75 @@ private static void improvedSwitch(Fruit fruit) {
     };
     System.out.println(sql);
 }
+```
+
+- **Sealed Classes**
+They allow you to create a class hierarchy where a class can only be subclassed within a specified module or file, making the class hierarchy more predictable and safer.
+ 
+ Benefits of Sealed Classes
+1.  Enhanced Security: Restricts inheritance hierarchy, preventing unauthorized access to sensitive code.
+2.  Better Maintainability: Promotes maintainability by making the codebase easier to understand and modify.
+3.  Improved Performance: Enables JVM optimizations at runtime, leading to better performance.
+
+- **instaceof**
+The `instanceof` operator can perform type checks and casting in a single step, making the code more concise and readable:
+
+- **‘_record’_  Type**
+The `record` keyword was introduced to simplify the creation of data carrier classes. A record type automatically generates methods like `constructor()`,`equals()`, `hashCode()`, `toString()`, and `getterMethods()` for the fields, reducing boilerplate code. Records are immutable and provide a compact syntax for declaring such classes.
+We can define a custom constructor which can validate the fields. It is recommended that we _do not override_ the getters and setters of records which could affects its immutability.
+
+ Key Points
+1.  Additional Fields: You can define additional fields in a record, but they must be `final` and initialized within the constructor.
+2.  Custom Constructors: You can define custom constructors to add validation or initialize additional fields.
+3.  Custom Methods: You can add methods to provide additional functionality.
+4.  Static Fields and Methods: You can add static fields and methods for utility purposes.
+
+- **Helpful NullPointerException**
+In Java 11 , when we get a NullPointerException, we only get the line number on which the exception occurred. With Java 17, the messaging has been improved as the NullPointerException message also tells us the exact method invocation which caused the NullPointerException.
+
+- **Compact Number Formatting Support**
+```java
+NumberFormat  shortFormat  = NumberFormat.getCompactNumberInstance(Locale.ENGLISH, NumberFormat.Style.SHORT);  
+System.out.println(shortFormat.format(1000))   //1K
+  
+NumberFormat  longFormat  = NumberFormat.getCompactNumberInstance(Locale.ENGLISH, NumberFormat.Style.LONG);  
+System.out.println(shortFormat.format(1000) // 1 thousand
+``` 
+
+- **Performance Benchmarks**
+
+In Java 17, the **Parallel Garbage Collector** (also known as the Throughput Collector) is one of the available garbage collection (GC) algorithms. It is designed to maximize application throughput by using multiple threads to perform garbage collection, which can help to **minimize pause times** and **increase overall performance** for **applications running on multi-core processors**.
+Java 17 is 8.66% faster than Java 11 for G1GC (default garbage collector).
+The Parallel Garbage Collector(Available in Java 17) is 16.39% faster than the G1 Garbage Collector (Used in Java 11).
+```shell
+java -XX:+UseParallelGC -XX:ParallelGCThreads=4 
+-XX:MaxGCPauseMillis=200 -XX:GCTimeRatio=4 
+-XX:+UseAdaptiveSizePolicy -jar your-application.jar
+
+```
+
+```java
+public abstract sealed class Animal permits Dog, Cat, Bird { }
+
+public final class Dog extends Animal {
+    private final String name;
+
+    public Dog(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+if (obj instanceof String str) {
+    System.out.println(str.length());
+}
+
+public record Point(int x, int y) {
+}
+
 ```
 
 ### Summary
